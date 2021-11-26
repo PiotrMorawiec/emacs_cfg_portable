@@ -19,12 +19,16 @@
 (delete-selection-mode 1)
 (column-number-mode 1)
 
+;; Enable mouse support in terminal Emacs
+(xterm-mouse-mode 1)
+
 ;; mouse behaviour
 (setq mouse-wheel-progressive-speed nil)
 
 ;; enable full screen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+;; Line highlight options
 (global-hl-line-mode 1)
 (set-face-background hl-line-face "gray13")
 
