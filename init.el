@@ -19,16 +19,24 @@
 (delete-selection-mode 1)
 (column-number-mode 1)
 
+;; Enable / disable displaying LR/CR characters
+;; (global-whitespace-mode nil)
+
 ;; Enable mouse support in terminal Emacs
 (xterm-mouse-mode 1)
 
-;; mouse behaviour
+;; How to get colors in temrinal Emacs ?
+;; https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Colors-on-a-TTY
+
+;; Mouse behaviour
 (setq mouse-wheel-progressive-speed nil)
 
-;; enable full screen
+;; Enable full screen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-;; Line highlight options
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
 (global-hl-line-mode 1)
 (set-face-background hl-line-face "gray13")
 
@@ -104,6 +112,27 @@
 ;; PACKAGES
 ;; --------------------------------------------------------------------------------------------
 
+(use-package command-log-mode
+  :ensure t
+  :bind (("C-c c t" . clm/toggle-command-log-buffer)
+	 ("C-c c o" . clm/open-command-log-buffer)
+	 ("C-c c x" . clm/close-command-log-buffer)
+	 ("C-c c c" . clm/command-log-clear)
+	 ("C-c c s" . clm/save-command-log)
+	 )
+  :custom
+  ;; disable default keybinding "C-c o" that opens command-log-buffer
+  (command-log-mode-key-binding-open-log nil)
+  :config
+  ;; Enable command-log-mode globally by default
+  (global-command-log-mode t))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 1))
+
 (use-package idle-highlight-mode
   :ensure t
   :custom
@@ -146,18 +175,18 @@
   :custom
   (display-battery-mode t))
 
-(use-package keycast
-  :config
-  ;; This works with doom-modeline, inspired by this comment:
-  ;; https://github.com/tarsius/keycast/issues/7#issuecomment-627604064
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-	(add-hook 'pre-command-hook 'keycast--update t)
-      (remove-hook 'pre-command-hook 'keycast--update)))
-  (add-to-list 'global-mode-string '("" mode-line-keycast " "))
-  (keycast-mode))
+;; (use-package keycast
+;;   :config
+;;   ;; This works with doom-modeline, inspired by this comment:
+;;   ;; https://github.com/tarsius/keycast/issues/7#issuecomment-627604064
+;;   (define-minor-mode keycast-mode
+;;     "Show current command and its key binding in the mode line."
+;;     :global t
+;;     (if keycast-mode
+;; 	(add-hook 'pre-command-hook 'keycast--update t)
+;;       (remove-hook 'pre-command-hook 'keycast--update)))
+;;   (add-to-list 'global-mode-string '("" mode-line-keycast " "))
+;;   (keycast-mode nil))
 
 (use-package auto-complete
   :ensure t
@@ -176,9 +205,11 @@
   :ensure t
   :custom
   (magit-status-buffer-switch-function 'switch-to-buffer)
-  :bind (("C-x g s" . magit-status)
-         ("C-x g b" . magit-blame)
-         ("C-x g c" . magit-checkout)))
+  :bind (("C-c g s" . magit-status)
+         ("C-c g f" . magit-fetch)
+         ("C-c g b" . magit-blame)
+         ("C-c g r" . magit-branch)
+         ("C-c g c" . magit-checkout)))
 
 (use-package projectile
   :ensure t
@@ -246,8 +277,8 @@
           ("M-y"     . helm-show-kill-ring)
           ("C-x C-f" . helm-find-files)
           ("C-b"     . helm-buffers-list)
-          ("C-x c o" . helm-occur)
-          ("C-x r b" . helm-filtered-bookmarks)
+          ("C-c h o" . helm-occur)
+          ("C-c h b" . helm-filtered-bookmarks)
           )
   :custom
   (helm-position 'bottom)
@@ -352,9 +383,11 @@
 (global-set-key (kbd "C-c o f")    #'my-open-custom-functions-file)
 (global-set-key (kbd "C-c o c")    #'my-open-customization-file)
 
-(global-set-key (kbd "C-x p r")    #'helm-projectile-recentf)
-(global-set-key (kbd "C-x p R")    #'projectile-replace)
-(global-set-key (kbd "C-x p x")    #'projectile-replace-regexp)
+(global-set-key (kbd "C-c p r")    #'helm-projectile-recentf)
+(global-set-key (kbd "C-c p R")    #'projectile-replace)
+(global-set-key (kbd "C-c p x")    #'projectile-replace-regexp)
+(global-set-key (kbd "C-,")        #'helm-projectile-grep)
+(global-set-key (kbd "C-.")        #'helm-projectile-ag)
 
 (define-key helm-map (kbd "TAB")   #'helm-execute-persistent-action)
 (define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action)
