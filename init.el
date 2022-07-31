@@ -7,9 +7,6 @@
 ;; INIT CONFIG
 ;; --------------------------------------------------------------------------------------------
 
-;; Set startup screen photo
-;; (setq fancy-splash-image "path")
-
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -25,7 +22,12 @@
 ;; Enable mouse support in terminal Emacs
 (xterm-mouse-mode 1)
 
-;; How to get colors in temrinal Emacs ?
+;; Enable auto revert mode globally, so that all buffers will be in sync with whats actually on disk.
+;; If you are sure that the file will only change by growing at the end, use Auto Revert Tail mode instead, as
+;; it is more efficient for this.
+(global-auto-revert-mode t)
+
+;; How to get colors in terminal Emacs ?
 ;; https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Colors-on-a-TTY
 
 ;; Mouse behaviour
@@ -34,13 +36,16 @@
 ;; Enable full screen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+;; Do not create backup files (with ~ suffix)
+(setq make-backup-files nil)
+
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (global-hl-line-mode 1)
 (set-face-background hl-line-face "gray13")
 
-(setq-default show-trailing-whitespace 1)
+(setq-default show-trailing-whitespace nil)
 (setq-default explicit-shell-file-name "/bin/bash")
 
 ;; --------------------------------------------------------------------------------------------
@@ -359,11 +364,11 @@
 ;; KEY BINDINGS
 ;; --------------------------------------------------------------------------------------------
 
-(global-set-key (kbd "M-v")        #'scroll-half-page-down)
-(global-set-key (kbd "C-v")        #'scroll-half-page-up)
+(global-set-key (kbd "M-v")        #'my/scroll-half-page-down)
+(global-set-key (kbd "C-v")        #'my/scroll-half-page-up)
 
-(global-set-key (kbd "<f5>")       #'revert-buffer)
-(global-set-key (kbd "<f6>")       #'kill-asterisk-buffers)
+(global-set-key (kbd "<f5>")       #'my/revert-buffer)
+(global-set-key (kbd "<f6>")       #'my/kill-asterisk-buffers)
 (global-set-key (kbd "<f9>")       #'minimap-mode)
 (global-set-key (kbd "<f12>")      #'xref-find-definitions)
 
@@ -371,17 +376,20 @@
 (global-set-key (kbd "<next>")     #'drag-stuff-down)
 
 (global-set-key (kbd "C-x 0")      #'kill-buffer-and-window)
-(global-set-key (kbd "C-c d")      #'duplicate-current-line-or-region)
+(global-set-key (kbd "C-c d")      #'my/duplicate-current-line-or-region)
 (global-set-key (kbd "C-c k")      #'kill-whole-line)
+(global-set-key (kbd "C-c l")      #'my/kill-word-at-point)
+(global-set-key (kbd "C-c s")      #'my/kill-sentence-at-point)
 (global-set-key (kbd "C-c x")      #'delete-trailing-whitespace)
-(global-set-key (kbd "C-c w")      #'toggle-highlight-trailing-whitespaces)
-(global-set-key (kbd "C-c h")      #'toggle-idle-highlight-mode)
+(global-set-key (kbd "C-c w")      #'my/toggle-highlight-trailing-whitespaces)
+(global-set-key (kbd "C-c e")      #'global-whitespace-mode)
+(global-set-key (kbd "C-c h")      #'my/toggle-idle-highlight-mode)
 (global-set-key (kbd "C-c C-e")    #'eval-region)
-(global-set-key (kbd "C-c t")      #'my-untabify-entire-buffer)
+(global-set-key (kbd "C-c t")      #'my/untabify-entire-buffer)
 
-(global-set-key (kbd "C-c o i")    #'my-open-init-file)
-(global-set-key (kbd "C-c o f")    #'my-open-custom-functions-file)
-(global-set-key (kbd "C-c o c")    #'my-open-customization-file)
+(global-set-key (kbd "C-c o i")    #'my/open-init-file)
+(global-set-key (kbd "C-c o f")    #'my/open-custom-functions-file)
+(global-set-key (kbd "C-c o c")    #'my/open-customization-file)
 
 (global-set-key (kbd "C-c p r")    #'helm-projectile-recentf)
 (global-set-key (kbd "C-c p R")    #'projectile-replace)
@@ -415,20 +423,20 @@
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
 ;; ORG
-(add-hook 'org-mode-hook #'my-org-mode-setup)
+(add-hook 'org-mode-hook #'my/org-mode-setup)
 (add-hook 'org-mode-hook #'org-bullets-mode)
-(add-hook 'org-mode-hook #'my-org-mode-visual-fill)
+(add-hook 'org-mode-hook #'my/org-mode-visual-fill)
 
 ;; XREF
 (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
 ;; MINIBUFFER
-(defun my-minibuffer-setup ()
+(defun my/minibuffer-setup ()
   "Function sets font size in the minibuffer"
   (set (make-local-variable 'face-remapping-alist)
        '((default :height 1.3))))
 
-(add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
+(add-hook 'minibuffer-setup-hook 'my/minibuffer-setup)
 
 ;; --------------------------------------------------------------------------------------------
 ;; OTHER SETTINGS
