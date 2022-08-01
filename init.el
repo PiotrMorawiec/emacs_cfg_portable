@@ -209,6 +209,45 @@
   (recentf-mode t)
   :diminish nil)
 
+(use-package dired
+  :ensure nil ;; dires is a built-in emacs package, so don't look for it in package repositories
+  :commands (dired dired-jump) ;; defer this config until one of this commands is executed
+  :bind (("C-x j" . dired-jump)
+         ;; those bindings will only be valid if dired-mode is active
+         :map dired-mode-map
+         ;; change this from ^ which is not convenient
+         ("<C-backspace>" . dired-up-directory)
+         ;; this one is a default keybinding, keep it here as an information tough
+         ("v" . dired-view-file))
+  :custom ((dired-listing-switches "-agho --group-directories-first"))
+  )
+
+;; Thanks to this package, the directories that we've visited won't be existing as opened buffers.
+;; Instead, all these buffers will be closed automatically.
+(use-package dired-single
+  :after (dired)
+  :commands (dired dired-jump)
+  :bind (:map dired-mode-map
+              ("<C-return>" . dired-single-up-directory)
+              ("<return>"   . dired-single-buffer)))
+
+;; This package has been replaced with "treemacs-icons-dired"
+;; (use-package all-the-icons-dired)
+
+;;  This package allow us to set a program different than Emacs, that we want to open given files with
+(use-package dired-open
+  :commands (dired dired-jump)
+  :config
+  ;; Doesn't work as expected!
+  ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
+  (setq dired-open-extensions '(("png" . "gwenview")
+                                ("jpg" . "gwenview"))))
+
+(use-package dired-hide-dotfiles
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :bind (:map dired-mode-map ("h" . dired-hide-dotfiles-mode)))
+
+
 (use-package magit
   :ensure t
   :custom
@@ -255,20 +294,17 @@
   :after (treemacs projectile)
   :ensure t)
 
-(use-package treemacs-icons-dired
-  :after (treemacs dired)
-  :ensure t
-  :config (treemacs-icons-dired-mode 1))
-
 (use-package treemacs-magit
   :after (treemacs magit)
   :ensure t)
 
-
 (use-package treemacs-all-the-icons
-  :ensure t
   :after (treemacs all-the-icons))
+  :ensure t
 
+(use-package treemacs-icons-dired
+  :ensure t
+  :hook (dired-mode . treemacs-icons-dired-enable-once))
 
 (use-package helm
   :ensure t
