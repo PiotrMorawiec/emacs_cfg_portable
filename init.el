@@ -4,6 +4,22 @@
 (message "Start reading ~/.emacs.d/init.el ...")
 
 ;; --------------------------------------------------------------------------------------------
+;; STARTUP SPEEDUP
+;; --------------------------------------------------------------------------------------------
+
+;; The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+
+(defun my/display-startup-time ()
+  (message "Emacs loaded in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time
+                    (time-subtract after-init-time before-init-time)))
+           gcs-done))
+
+(add-hook 'emacs-startup-hook #'my/display-startup-time)
+
+;; --------------------------------------------------------------------------------------------
 ;; INIT CONFIG
 ;; --------------------------------------------------------------------------------------------
 
@@ -112,6 +128,23 @@
         (setq spacemacs-theme-comment-bg nil)
         (setq spacemacs-theme-comment-italic t)
   :init (load-theme 'spacemacs-dark t))
+
+;; --------------------------------------------------------------------------------------------
+;; DASHBOARD
+;; --------------------------------------------------------------------------------------------
+
+(use-package dashboard
+  :ensure t
+  :diminish dashboard-mode
+  :config
+  (setq dashboard-set-navigator t)
+  (setq dashboard-center-content t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-footer nil)
+  (setq dashboard-items '((projects  . 5)
+			  (recents . 10)))
+  (dashboard-setup-startup-hook))
 
 ;; --------------------------------------------------------------------------------------------
 ;; PACKAGES
@@ -351,10 +384,10 @@
         ))
 
 (use-package helm-icons
-  :after (all-the-icons helm)
+  :after (treemacs helm)
   :ensure t
   :custom
-  (helm-icons-provider 'all-the-icons)
+  (helm-icons-provider 'treemacs)
   :config
   (helm-icons-enable))
 
@@ -464,11 +497,6 @@
 (add-hook 'prog-mode-hook 'toggle-truncate-lines)
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-
-;; ORG
-(add-hook 'org-mode-hook #'my/org-mode-setup)
-(add-hook 'org-mode-hook #'org-bullets-mode)
-(add-hook 'org-mode-hook #'my/org-mode-visual-fill)
 
 ;; XREF
 (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
