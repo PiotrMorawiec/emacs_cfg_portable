@@ -384,10 +384,8 @@
         ))
 
 (use-package helm-icons
-  :after (treemacs helm)
+  :after helm
   :ensure t
-  :custom
-  (helm-icons-provider 'treemacs)
   :config
   (helm-icons-enable))
 
