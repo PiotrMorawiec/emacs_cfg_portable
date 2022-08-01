@@ -170,6 +170,9 @@
 (use-package all-the-icons
   :ensure t)
 
+(unless (member "all-the-icons" (font-family-list))
+    (all-the-icons-install-fonts t))
+
 (use-package doom-modeline
   :after (all-the-icons)
   :ensure t
@@ -261,20 +264,11 @@
   :after (treemacs magit)
   :ensure t)
 
-(use-package helm-icons
-  :ensure t
-  :after (all-the-icons helm)
-  :custom
-  (helm-icons-provider 'all-the-icons)
-  :config
-  (helm-icons-enable))
 
 (use-package treemacs-all-the-icons
   :ensure t
   :after (treemacs all-the-icons))
 
-(use-package helm-ag
-  :ensure t)
 
 (use-package helm
   :ensure t
@@ -299,6 +293,7 @@
   (helm-autoresize-mode 1))
 
 (use-package helm-swoop
+  :after helm
   :ensure t
   :bind
   (("M-s"     . helm-swoop))
@@ -310,21 +305,33 @@
   (helm-swoop-split-with-multiple-windows t)
   )
 
-(use-package helm-xref
-  :ensure t
-  :after helm
-  :commands helm-xref
-  :config
-  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-
 (use-package helm-projectile
-  :ensure t
   :after (helm projectile)
+  :ensure t
   :bind(
         ("C-p"   . helm-projectile-find-file)
         ("C-l"   . helm-projectile-recentf)
         ("<f8>"  . helm-projectile-switch-project)
         ))
+
+(use-package helm-icons
+  :after (all-the-icons helm)
+  :ensure t
+  :custom
+  (helm-icons-provider 'all-the-icons)
+  :config
+  (helm-icons-enable))
+
+(use-package helm-ag
+  :after helm
+  :ensure t)
+
+(use-package helm-xref
+  :after helm
+  :ensure t
+  :commands helm-xref
+  :config
+  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 
 (use-package minimap
   :ensure t
