@@ -10,6 +10,8 @@
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
 
++(setq read-process-output-max (* 1024 1024))
+
 (defun my/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
@@ -446,16 +448,35 @@
   (python-shell-interpreter "python3"))
 
 (use-package yaml-mode
+  :ensure t
+  :mode ("\\.yml\\'" . yaml-mode)
+  ;; Unlike python-mode, this mode follows the Emacs convention of not
+  ;; binding the ENTER key to `newline-and-indent'.  To get this
+  ;; behavior, add the key definition to `yaml-mode-hook'
+  :hook (yaml-mode . (lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+
+(use-package c-mode
+  :ensure nil)
+
+ (use-package c++-mode
+   :ensure nil
+   ;; open .tpp files with c++-mode
+   :mode ("\\.tpp\\'" . c++-mode))
+
+(use-package docstr
+  :ensure t
+  :hook
+  (c++-mode . docstr-mode)
+  :config
+  (setq docstr-key-support t))
+
+(use-package groovy-mode
   :ensure t)
 
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
-;; Unlike python-mode, this mode follows the Emacs convention of not
-;; binding the ENTER key to `newline-and-indent'.  To get this
-;; behavior, add the key definition to `yaml-mode-hook':
-(add-hook 'yaml-mode-hook
-          '(lambda ()
-             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode t))
 
 ;; --------------------------------------------------------------------------------------------
 ;; KEY BINDINGS
