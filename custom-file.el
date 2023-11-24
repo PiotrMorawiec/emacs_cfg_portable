@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("~/projects/pusch/org/info/dsp/fixed_point_aithhmetic.org" "~/projects/pusch/org/agenda.org"))
- '(package-selected-packages
-   '(keycast org-roam idle-highlight-mode highlight-symbol xref helm-xref popwin doom-modeline treemacs-all-the-icons helm-smex helm-rg helm-ag rg ag org-wild-notifier visual-fill-column viaual-fill-column all-the-icons helm-swoop dumb-jump helm-icons org-bullets treemacs-magit treemacs-icons-dired treemacs-projectile spacemacs-theme drag-stuff highlight-indent-guides paredit gnu-elpa-keyring-update helm-occur helm-projectile ht auto-complete minimap projectile treemacs helm magit gruvbox-theme use-package)))
+   '("~/projects/pusch/org/info/dsp/fixed_point_aithhmetic.org"
+     "~/projects/pusch/org/agenda.org"))
+ '(package-selected-packages nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

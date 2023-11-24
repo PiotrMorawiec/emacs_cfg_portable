@@ -10,7 +10,7 @@
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
 
-+(setq read-process-output-max (* 1024 1024))
+(setq read-process-output-max (* 1024 1024))
 
 (defun my/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
@@ -455,8 +455,8 @@
   ;; behavior, add the key definition to `yaml-mode-hook'
   :hook (yaml-mode . (lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
-(use-package c-mode
-  :ensure nil)
+;; (use-package c-mode
+  ;; :ensure t)
 
  (use-package c++-mode
    :ensure nil
@@ -537,7 +537,7 @@
 
 ;; PROG
 (add-hook 'prog-mode-hook 'toggle-truncate-lines)
-(add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
 ;; XREF
